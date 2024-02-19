@@ -14,12 +14,12 @@ services:
       - DATABASE_USERNAME=
       - DATABASE_PASSWORD=
       - DATABASE_SSL=false
-    db:
-      image:
-      container_name:
-      ports:
+  db:
+    image:
+    container_name:
+    ports:
   
-      environment:
-        - DATABASE_USERNAME=
-        - DATABASE_PASSWORD=
-        - DATABASE_DB=
+    environment:
+       - DATABASE_USERNAME=
+       - DATABASE_PASSWORD=
+       - DATABASE_DB=
