@@ -15,11 +15,20 @@
       "type": "string",
       "unique": false
     },
-  "mobile": {
-    "type": "number",
-    "required": true,
-    "minLength": 10,
-    "maxLength": 10
+    "mobile": {
+      "type": "string"
+    },
+    "classes": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::class.class",
+      "mappedBy": "students"
+    },
+    "room": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::room.room",
+      "inversedBy": "students"
+    }
   }
-  }
-  }
+}

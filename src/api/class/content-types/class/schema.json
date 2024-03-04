@@ -11,5 +11,33 @@
     "draftAndPublish": false
   },
   "pluginOptions": {},
-  "attributes": {}
+  "attributes": {
+    "rooms": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::room.room",
+      "inversedBy": "subjects"
+    },
+    "subjects": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::subject.subject",
+      "inversedBy": "classes"
+    },
+    "students": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::student.student",
+      "inversedBy": "classes"
+    },
+    "class": {
+      "type": "string"
+    },
+    "teachers": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::teacher.teacher",
+      "inversedBy": "classes"
+    }
+  }
 }

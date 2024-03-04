@@ -583,6 +583,53 @@ export interface PluginContentReleasesReleaseAction
   };
 }
 
+export interface PluginI18NLocale extends Schema.CollectionType {
+  collectionName: 'i18n_locale';
+  info: {
+    singularName: 'locale';
+    pluralName: 'locales';
+    collectionName: 'locales';
+    displayName: 'Locale';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 50;
+        },
+        number
+      >;
+    code: Attribute.String & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUsersPermissionsPermission
   extends Schema.CollectionType {
   collectionName: 'up_permissions';
@@ -734,53 +781,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
-export interface PluginI18NLocale extends Schema.CollectionType {
-  collectionName: 'i18n_locale';
-  info: {
-    singularName: 'locale';
-    pluralName: 'locales';
-    collectionName: 'locales';
-    displayName: 'Locale';
-    description: '';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
-  };
-  attributes: {
-    name: Attribute.String &
-      Attribute.SetMinMax<
-        {
-          min: 1;
-          max: 50;
-        },
-        number
-      >;
-    code: Attribute.String & Attribute.Unique;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'plugin::i18n.locale',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'plugin::i18n.locale',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface ApiClassClass extends Schema.CollectionType {
   collectionName: 'classes';
   info: {
@@ -793,6 +793,27 @@ export interface ApiClassClass extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
+    rooms: Attribute.Relation<
+      'api::class.class',
+      'manyToMany',
+      'api::room.room'
+    >;
+    subjects: Attribute.Relation<
+      'api::class.class',
+      'manyToMany',
+      'api::subject.subject'
+    >;
+    students: Attribute.Relation<
+      'api::class.class',
+      'manyToMany',
+      'api::student.student'
+    >;
+    class: Attribute.String;
+    teachers: Attribute.Relation<
+      'api::class.class',
+      'manyToMany',
+      'api::teacher.teacher'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -816,12 +837,23 @@ export interface ApiRoomRoom extends Schema.CollectionType {
     singularName: 'room';
     pluralName: 'rooms';
     displayName: 'Room';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
     name: Attribute.String & Attribute.Required & Attribute.Unique;
+    subjects: Attribute.Relation<
+      'api::room.room',
+      'manyToMany',
+      'api::subject.subject'
+    >;
+    students: Attribute.Relation<
+      'api::room.room',
+      'oneToMany',
+      'api::student.student'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -844,6 +876,17 @@ export interface ApiStudentStudent extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String;
+    mobile: Attribute.String;
+    classes: Attribute.Relation<
+      'api::student.student',
+      'manyToMany',
+      'api::class.class'
+    >;
+    room: Attribute.Relation<
+      'api::student.student',
+      'manyToOne',
+      'api::room.room'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -868,12 +911,28 @@ export interface ApiSubjectSubject extends Schema.CollectionType {
     singularName: 'subject';
     pluralName: 'subjects';
     displayName: 'Subject';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
     name: Attribute.String & Attribute.Required;
+    classes: Attribute.Relation<
+      'api::subject.subject',
+      'manyToMany',
+      'api::class.class'
+    >;
+    rooms: Attribute.Relation<
+      'api::subject.subject',
+      'manyToMany',
+      'api::room.room'
+    >;
+    teachers: Attribute.Relation<
+      'api::subject.subject',
+      'oneToMany',
+      'api::teacher.teacher'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -898,12 +957,23 @@ export interface ApiTeacherTeacher extends Schema.CollectionType {
     singularName: 'teacher';
     pluralName: 'teachers';
     displayName: 'Teacher';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
     name: Attribute.String & Attribute.Required;
+    classes: Attribute.Relation<
+      'api::teacher.teacher',
+      'manyToMany',
+      'api::class.class'
+    >;
+    subject: Attribute.Relation<
+      'api::teacher.teacher',
+      'manyToOne',
+      'api::subject.subject'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -936,10 +1006,10 @@ declare module '@strapi/types' {
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
+      'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
-      'plugin::i18n.locale': PluginI18NLocale;
       'api::class.class': ApiClassClass;
       'api::room.room': ApiRoomRoom;
       'api::student.student': ApiStudentStudent;
