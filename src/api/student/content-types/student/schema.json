@@ -16,7 +16,11 @@
       "unique": false
     },
     "mobile": {
-      "type": "string"
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "minLength": 10,
+      "maxLength": 10
     },
     "classes": {
       "type": "relation",

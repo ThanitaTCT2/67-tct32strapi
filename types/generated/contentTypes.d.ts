@@ -876,7 +876,13 @@ export interface ApiStudentStudent extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String;
-    mobile: Attribute.String;
+    mobile: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetMinMaxLength<{
+        minLength: 10;
+        maxLength: 10;
+      }>;
     classes: Attribute.Relation<
       'api::student.student',
       'manyToMany',
